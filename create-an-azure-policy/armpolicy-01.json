@@ -1,0 +1,49 @@
+{
+    "if": {
+      "anyOf": [
+        {
+          "not": {
+            "anyOf": [
+              {
+                "field": "type",
+                "like": "Microsoft.Storage/storageAccounts/"
+              },
+              {
+                "field": "type",
+                "like": "Microsoft.Authorization/PolicyAssignment/"
+              },
+              {
+                "field": "type",
+                "in": [ "Microsoft.Storage/storageAccounts", "Microsoft.Authorization/PolicyAssignment" ]
+              }
+            ]
+          }
+        },
+        {
+          "allOf": [
+            {
+              "source": "action",
+              "equals": "Microsoft.Storage/storageAccounts/write"
+            },
+            {
+              "field": "type",
+              "equals": "Microsoft.Storage/storageAccounts"
+            },
+            {
+              "field": "Microsoft.Storage/storageAccounts/sku.tier",
+              "in": [ "Standard" ]
+            },
+            {
+              "not": {
+                "field": "Microsoft.Storage/storageAccounts/sku.name",
+                "in": [ "Standard_RAGRS" ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "then": {
+      "effect": "deny"
+    }
+  }
